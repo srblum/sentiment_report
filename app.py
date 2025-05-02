@@ -17,11 +17,13 @@ SYMBOL = "PLTR"
 url = f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={SYMBOL}&interval=5min&apikey={alpha_vantage_api_key}'
 response = requests.get(url)
 data = response.json()
-pprint(data)
-start = ...
-end = ...
-direction = "up" if (end - start) > 0 else "down"
-message = f"Palantir is {direction} today! It started at {start} and ended at {end}."
+price_items = sorted(data["Time Series (5min)"].items(), key=lambda x: x[0])
+start_item = price_items[0]
+end_item = price_items[-1]
+start_price = float(start_item[1]["1. open"])
+end_price = float(end_item[1]["4. close"])
+direction = "up" if (end_price - start_price) > 0 else "down"
+message = f"Palantir is {direction} today! It started at {start_price} and ended at {end_price}."
 
 # send test message to test number
 message = client.messages.create(
